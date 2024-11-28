@@ -1,0 +1,114 @@
+app.js
+
+Weather.jsx
+
+Search.jsx
+
+WeathInfo.jsx
+
+--------------------------------------------------
+
+1.app.js
+
+import React from 'react';
+import WeatherApp from './WeatherApp/Weather.jsx';
+
+
+const App = () => {
+  return (
+    <div>
+      
+      <h1>Weather App</h1>
+      <WeatherApp />
+ 
+    </div>
+
+  );
+}
+
+export default App;
+
+
+---------------------------------------
+
+2.weather.jsx
+
+
+
+import React, { useState } from 'react';
+import Search from './Search';
+import WeatherInfo from './WeatherInfo';
+
+const api = {
+    key: "bf1fad6b9001cb700979fc0efe53b592",
+    baseUrl: "https://api.openweathermap.org/data/2.5/weather",
+}
+
+const Weather = () => {
+    const [search, setSearch] = useState("");
+    const [data, setData] = useState({});
+
+    const handleClick = () => {
+        fetch(`${api.baseUrl}?q=${search}&appid=${api.key}`)
+            .then((res) => res.json())
+            .then((d) => setData(d));
+    };
+
+    return (
+        <div>
+            <Search search={search} setSearch={setSearch} handleClick={handleClick} />
+            <WeatherInfo data={data} />
+        </div>
+    );
+}
+
+export default Weather;
+
+-----------------------------------------------
+
+3.Search.jsx
+
+
+import React from 'react';
+
+const Search = ({ search, setSearch, handleClick }) => {
+    return (
+        <div>
+            <input 
+                type="text" 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)} 
+                placeholder="Enter city name" 
+            />
+            <button onClick={handleClick}>Submit</button>
+        </div>
+    );
+}
+
+export default Search;
+
+-----------------------------------------------------------
+
+4.weatherInfo.jsx
+
+
+import React from 'react';
+
+const WeatherInfo = ({ data }) => {
+    if (!data.main) {
+        return <p>No data available</p>;
+    }
+
+    return (
+        <div>
+            <p>City: {data.name}</p>
+            <p>Temperature: {(data.main.temp - 273.15).toFixed(2)} °C</p>
+            <p>Weather: {data.weather[0].main}</p>
+        </div>
+    );
+}
+
+export default WeatherInfo;
+
+-------------------------------------------------------------
+
